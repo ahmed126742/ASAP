@@ -1,0 +1,6 @@
+@ASAP_Task_HostAddress = http://localhost:5252
+
+GET {{ASAP_Task_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
