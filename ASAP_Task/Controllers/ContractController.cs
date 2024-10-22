@@ -1,0 +1,53 @@
+﻿using ASAP.Application.Common.Models;
+using ASAP.Application.Services.Contract;
+using ASAP.Application.Services.Contract.DTOs.Processing;
+using ASAP.Application.Services.Contract.DTOs.Retreival;
+using ASAP.Application.Services.Contractor.DTOs.Retreival;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ASAP_Task.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ContractController : ControllerBase
+    {
+        private readonly IContractService _contractService;
+
+        public ContractController(IContractService contractService)
+        {
+            _contractService = contractService;
+        }
+
+        [HttpPost("CreateContract")]
+        public async Task<ActionResult<Guid>> CreateContract(CreateContractRequest request,CancellationToken cancellationToken)
+        {
+            return Ok(await _contractService.CreateContract(request, cancellationToken));
+        }
+
+        [HttpPost("GetContract")]
+        public async Task<ActionResult<GetContractResponse>> GetContract(GetContractRequest request, CancellationToken cancellationToken)
+        {
+            return Ok(await _contractService.GetContractAsync(request, cancellationToken));
+        }
+
+        [HttpPost("GetContracts")]
+        public async Task<ActionResult<PagedReponse<GetFilteredContractsResponse>>> GetContracts(PaginationRequest<GetFilteredContractsRequest, GetFilteredContractsResponse> request, CancellationToken cancellationToken)
+        {
+            return Ok(await _contractService.GetPagedFilteresContracts(request, cancellationToken));
+        }
+
+        [HttpPost("UpdateContract")]
+        public async Task<ActionResult> UpdateContract(UpdateContractRequest request, CancellationToken cancellationToken)
+        {
+            await _contractService.UpdateContractAsync(request,cancellationToken);
+            return Ok();
+        }
+
+        [HttpPost("DeleteContract")]
+        public async Task<ActionResult> DeleteContract(DeleteContractRequest request, CancellationToken cancellationToken)
+        {
+            await _contractService.DeleteContractAsync(request, cancellationToken);
+            return Ok();
+        }
+    }
+}

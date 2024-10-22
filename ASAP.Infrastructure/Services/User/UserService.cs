@@ -34,7 +34,7 @@ namespace ASAP.Infrastructure.Services.User
             if (await _userRepository.CheckUserExistanceAsync(request.Email, cancellationToken))
                 throw new BadRequestException("Email already exist!");
 
-            var user = _mapper.Map<Domain.Entities.Client>(request);
+            var user = _mapper.Map<Domain.Entities.User>(request);
             _userRepository.Create(user);
             await _unitOfWork.Save(cancellationToken);
             return new CreateUserResponse { Id = user.Id };
@@ -57,6 +57,12 @@ namespace ASAP.Infrastructure.Services.User
             return new PagedReponse<GetFilteredUsersResponse>(filteredUsers, await users.CountAsync(), request.PageNumber, request.PageSize);
         }
 
+        public async Task<IList<GetUserRsponse>> GetUsersByEmails(ICollection<string> emails, CancellationToken cancellationToken)
+        {
+            var users = _userRepository.GetAllAsQuarble(x=> emails.Select(x => x.ToLower()).Contains(x.Email.ToLower()));
+            return _mapper.Map<List<GetUserRsponse>>(await users.ToListAsync(cancellationToken));
+        }
+
         public async Task<GetUserRsponse> GetUserAsync(GetUserRequest request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.Get(request.Id, cancellationToken);
@@ -69,6 +75,11 @@ namespace ASAP.Infrastructure.Services.User
         public async Task<ICollection<string>> GetUsersEmails(CancellationToken cancellationToken)
         {
               return await _userRepository.GetUsersEmailsAsync(cancellationToken);
+        }
+
+        public async Task<Domain.Entities.User> GetUserByEmail(string email, CancellationToken cancellationToken)
+        { 
+              return await _userRepository.GetUserByEmailAsync(email, cancellationToken);
         }
 
         public async Task UpdateUserAsync(UpdateUserRequest request, CancellationToken cancellationToken)

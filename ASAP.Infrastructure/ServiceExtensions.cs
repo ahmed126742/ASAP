@@ -1,9 +1,12 @@
 ﻿using System.Reflection;
 using ASAP.Application.Services;
-using ASAP.Infrastructure.BackgroudServices;
+using ASAP.Application.Services.Contract;
+using ASAP.Application.Services.ContractItems;
+using ASAP.Application.Services.Contractor;
+using ASAP.Application.Services.Supplier;
 using ASAP.Infrastructure.EmailServices;
-using ASAP.Infrastructure.Intergrations;
-using ASAP.Infrastructure.Services.Stock;
+using ASAP.Infrastructure.Services.Contract;
+using ASAP.Infrastructure.Services.Supplier;
 using ASAP.Infrastructure.Services.User;
 using Hangfire;
 using Microsoft.Extensions.Configuration;
@@ -25,10 +28,14 @@ namespace ASAP.Infrastructure
 
             services.AddHttpClient();
             services.AddTransient<IUserService, UserService>(); // Register your service
-            services.AddTransient<IStockService, StockService>(); // Register your service
+            services.AddTransient<ISupplierService, SupplierService>(); // Register your service
+            services.AddTransient<IContractorService, ContractorService>(); // Register your service
+            services.AddTransient<IContractService, ContractService>();
+            services.AddTransient<IContractItemsService, ContractItemService>();
+            services.AddTransient<IContractService, ContractService>();
+
+            //            services.AddTransient<IStockService, StockService>(); // Register your service
             services.AddTransient<IEmailService, EmailService>(); // Register your service
-            services.AddSingleton<IStockBackgroundService, StockBackgroundService>(); // Register your service
-            services.AddTransient<IPolygonIntergrationService, PolygonIntergration>(); // Register your service
 
         }
     }

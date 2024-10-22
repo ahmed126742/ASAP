@@ -7,7 +7,7 @@ namespace ASAP.Application.Features.Users.UpdateUser
     {
         public UpdateUserMapper()
         {
-            CreateMap<UpdateUserRequest, Client>();
+            CreateMap<UpdateUserRequest, User>();
         }
     }
 }

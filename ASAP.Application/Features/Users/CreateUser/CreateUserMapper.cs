@@ -7,7 +7,7 @@ namespace ASAP.Application.Features.Users.CreateUser
     {
         public CreateUserMapper()
         {
-            CreateMap<CreateUserRequest, Client>();
+            CreateMap<CreateUserRequest, User>();
         }
     }
 }

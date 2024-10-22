@@ -7,7 +7,7 @@ namespace ASAP.Application.Features.Users.GetUser
     {
         public GetUserMapper()
         {
-            CreateMap<Client, GetUserRsponse>();
+            CreateMap<User, GetUserRsponse>();
         }
     }
 }

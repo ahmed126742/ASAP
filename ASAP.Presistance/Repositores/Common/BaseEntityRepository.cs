@@ -40,7 +40,7 @@ namespace ASAP.Presistance.Repositores.Common
 
         public void SoftDeletion(T entity)
         {
-            entity.IsActive = false;
+            entity.Deleted = true;
             entity.UpdatedAt = DateTime.UtcNow;
             Update(entity);
         }
@@ -51,13 +51,16 @@ namespace ASAP.Presistance.Repositores.Common
             _context.Update(entity);
         }
 
-        protected IQueryable<T> GetAllAsQuarble(Expression<Func<T, bool>> ? filters = null)
+        public IQueryable<T> GetAllAsQuarble(Expression<Func<T, bool>> ? filters = null)
         {
-            return  _context.Set<T>()
-                .Where(filters);
+            var query = _context.Set<T>();
+            if(filters != null)
+                return  query.Where(filters);
+
+            return query;
         }
 
-        private IQueryable<T> GeQuarableAsPaginated(int page, int rows, Expression<Func<T, bool>>? filters = null)
+        protected IQueryable<T> GetQuarableAsPaginated(int page, int rows, Expression<Func<T, bool>>? filters = null)
         {
             return GetAllAsQuarble(filters)
                 .Skip((page - 1) * rows)

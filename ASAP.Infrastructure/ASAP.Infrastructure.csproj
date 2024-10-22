@@ -22,4 +22,8 @@
     <ProjectReference Include="..\ASAP.Domain\ASAP.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="BackgroudServices\" />
+  </ItemGroup>
+
 </Project>

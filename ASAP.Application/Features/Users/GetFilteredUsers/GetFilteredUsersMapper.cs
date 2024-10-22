@@ -7,7 +7,7 @@ namespace ASAP.Application.Features.Users.GetFilteredUsers
     {
         public GetFilteredUsersMapper()
         {
-            CreateMap<Client, GetFilteredUsersResponse>();
+            CreateMap<User, GetFilteredUsersResponse>();
         }
     }
 }

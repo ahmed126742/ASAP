@@ -18,12 +18,15 @@ namespace ASAP.Presistance
 
         public static void ConfigurePersistence(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("DataContextConnection");
-            services.AddDbContext<DataContext>(opt => opt.UseSqlServer(connectionString));
+            var connectionString = configuration.GetConnectionString("InstallDirctDataConnectionString");
+            services.AddDbContext<DataContext>(opt => opt.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IStockRepository, StockRepository>();
-
+            services.AddTransient<ISupplierRepository, SupplierRepository>();
+            services.AddTransient<IContractorRepository, ContractorRepository>();
+            services.AddTransient<IContractRepository, ContractRepository>();
+            services.AddTransient<IContractItemRepository, ContractItemRepository>();
+            services.AddTransient<ISurveyRepository, SurveyRepository>();
         }
     }
 }

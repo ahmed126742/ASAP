@@ -3,13 +3,11 @@ using ASAP.Domain.Entities;
 using ASAP.Domain.Repositories;
 using ASAP.Presistance.Contexts;
 using ASAP.Presistance.Repositores.Common;
-using Azure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ASAP.Presistance.Repositores
 {
-    public class UserRepository : BaseEntityRepository<Client>, IUserRepository
+    public class UserRepository : BaseEntityRepository<User>, IUserRepository
     {
         public UserRepository(DataContext context) : base(context)
         {
@@ -17,12 +15,12 @@ namespace ASAP.Presistance.Repositores
 
         public async Task<bool> CheckUserExistanceAsync(string email, CancellationToken cancellationToken)
         {
-            return await _context.Set<Client>().AnyAsync(x => x.Email.ToLower() == email.ToLower(), cancellationToken);
+            return await _context.Set<User>().AnyAsync(x => x.Email.ToLower() == email.ToLower(), cancellationToken);
         }
 
-        public async Task<Client> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
+        public async Task<User> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
         {
-            return await _context.Set<Client>().FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
+            return await _context.Set<User>().FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
         }
 
         public async Task<IList<string>> GetUsersEmailsAsync(CancellationToken cancellationToken)
@@ -30,12 +28,12 @@ namespace ASAP.Presistance.Repositores
             return await GetAllAsQuarble().Select(x => x.Email).ToListAsync(cancellationToken);
         }
 
-        public IQueryable<Client> GetFilteredUsers(string? searchText = "")
+        public IQueryable<User> GetFilteredUsers(string? searchText = "")
         {
             return GetAllAsQuarble(FitlerUsers(searchText));        
         }
 
-        public Expression<Func<Client, bool>> FitlerUsers(string? searchText = "")
+        public Expression<Func<User, bool>> FitlerUsers(string? searchText = "")
         {
             return x => string.IsNullOrEmpty(searchText) ||
             x.FirstName.ToLower().Contains(searchText.ToLower()) ||

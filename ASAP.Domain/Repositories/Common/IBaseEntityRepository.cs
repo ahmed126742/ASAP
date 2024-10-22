@@ -11,5 +11,7 @@ namespace ASAP.Domain.Repositories.Common
         void Update(T entity);
         void Delete(T entity);
         void SoftDeletion(T entity);
+
+        IQueryable<T> GetAllAsQuarble(Expression<Func<T, bool>>? filters = null);
     }
 }

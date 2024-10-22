@@ -14,7 +14,14 @@ namespace ASAP.Presistance.Repositores.Common
 
         public async Task Save(CancellationToken cancellationToken)
         {
-            await _context.SaveChangesAsync(cancellationToken);
+            try
+            {
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("DB action not saved cause : " + ex.Message);
+            }
         }
     }
 }
