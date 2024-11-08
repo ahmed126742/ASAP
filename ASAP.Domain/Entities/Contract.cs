@@ -4,6 +4,11 @@ namespace ASAP.Domain.Entities
 {
     public class Contract : BaseEntity
     {
+        public Contract()
+        {
+            contractItems = new HashSet<ContractItem>();
+        }
+
         public string? Name { get; set; }
 
         public string? PhoneNumber { get; set; }
@@ -25,5 +30,7 @@ namespace ASAP.Domain.Entities
         public Guid? ContractorId { get; set; }
 
         public Contractor? Contractor { get; set; }
+
+        public ICollection<ContractItem> contractItems { get; set; }
     }
 }

@@ -1,14 +1,18 @@
 ﻿using ASAP.Application.Common.Models;
+using ASAP.Application.Services.ContractItems.DTOs;
 using ASAP.Application.Services.User.DTOs;
 using ASAP.Application.Services.User.Fitting;
 using ASAP.Application.Services.User.Fitting.DTOs.Processing;
 using ASAP.Application.Services.User.Fitting.DTOs.Retrieval;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ASAP_Task.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class FitterController : ControllerBase
     {
         private readonly IFitterService _fitterService;
@@ -23,17 +27,28 @@ namespace ASAP_Task.Controllers
             return Ok(await _fitterService.CreateFitting(request, cancellationToken));
         }
 
+        [HttpPost("CreateOutstandingFitting")]
+        public async Task<ActionResult<Guid>> CreateOutstandingFitting(CreateOutstandingFittingRequest request, CancellationToken cancellationToken)
+        {
+            return Ok(await _fitterService.CreateOutstandingFitting(request, cancellationToken));
+        }
+
         [HttpPost("GetMyJobs")]
         public async Task<ActionResult<PagedReponse<GetUserJobsResponse>>> GetMyJobs(PaginationRequest<GetUserJobsRequest, GetUserJobsResponse> request, CancellationToken cancellationToken)
         {
             return Ok(await _fitterService.GetMyJobs(request, cancellationToken));
         }
 
-
         [HttpPost("GetFitter")]
         public async Task<ActionResult<GetFittingResponse>> GetFitter(GetFittingRequest request, CancellationToken cancellationToken)
         {
             return Ok(await _fitterService.GetFitting(request, cancellationToken));
+        } 
+        
+        [HttpPost("GetFittingByContractItem")]
+        public async Task<ActionResult<GetFittingResponse>> GetFittingByContractItem(ContractItemIdentity request, CancellationToken cancellationToken)
+        {
+            return Ok(await _fitterService.GetFittingByContractItem(request, cancellationToken));
         }
 
         [HttpPost("Admin/GetFitters")]
@@ -41,13 +56,6 @@ namespace ASAP_Task.Controllers
         {
             var result = await _fitterService.GetFittings(request, cancellationToken);
             return Ok(result);
-        }
-
-
-        [HttpPost("GetMyFittings")]
-        public async Task<ActionResult<IList<GetUserJobsResponse>>> GetMyFittings(GetUserJobsRequest request, CancellationToken cancellationToken)
-        {
-            return Ok(await _fitterService.GetMyFittings(request, cancellationToken));
         }
 
         [HttpPost("UpdateFitter")]

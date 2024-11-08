@@ -22,6 +22,92 @@ namespace ASAP.Presistance.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("ASAP.Domain.Entities.Attachment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("AttachmentHeaderId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool?>("Deleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DescriptionEn")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Extension")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Size")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AttachmentHeaderId");
+
+                    b.ToTable("Attachments", (string)null);
+                });
+
+            modelBuilder.Entity("ASAP.Domain.Entities.AttachmentHeader", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool?>("Deleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AttachmentHeaders", (string)null);
+                });
+
             modelBuilder.Entity("ASAP.Domain.Entities.Contract", b =>
                 {
                     b.Property<Guid>("Id")
@@ -77,7 +163,7 @@ namespace ASAP.Presistance.Migrations
 
                     b.HasIndex("ContractorId");
 
-                    b.ToTable("Contracts");
+                    b.ToTable("Contracts", (string)null);
                 });
 
             modelBuilder.Entity("ASAP.Domain.Entities.ContractItem", b =>
@@ -185,7 +271,7 @@ namespace ASAP.Presistance.Migrations
                     b.Property<DateTime?>("RequestDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("Requirement")
+                    b.Property<int?>("RequirementContractTypeId")
                         .HasColumnType("int");
 
                     b.Property<int?>("Roofs")
@@ -199,6 +285,12 @@ namespace ASAP.Presistance.Migrations
 
                     b.Property<int?>("Status")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("SurveyDateFrom")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("SurveyDateTo")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid?>("SurveyorId")
                         .HasColumnType("char(36)");
@@ -231,7 +323,7 @@ namespace ASAP.Presistance.Migrations
 
                     b.HasIndex("ContractId");
 
-                    b.ToTable("contractItems");
+                    b.ToTable("contractItems", (string)null);
                 });
 
             modelBuilder.Entity("ASAP.Domain.Entities.Contractor", b =>
@@ -267,7 +359,7 @@ namespace ASAP.Presistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Contractors");
+                    b.ToTable("Contractors", (string)null);
                 });
 
             modelBuilder.Entity("ASAP.Domain.Entities.Fitting", b =>
@@ -276,10 +368,10 @@ namespace ASAP.Presistance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<bool>("AllFixingsCorrectlyCarriedOut")
+                    b.Property<bool?>("AllFixingsCorrectlyCarriedOut")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("AllFramesSquarLevelPlumb")
+                    b.Property<bool?>("AllFramesSquarLevelPlumb")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<Guid?>("AttachementHeaderId")
@@ -300,19 +392,19 @@ namespace ASAP.Presistance.Migrations
                     b.Property<bool?>("Deleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("InternalAndExternalMakingGoodComplete")
+                    b.Property<bool?>("InternalAndExternalMakingGoodComplete")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("IstallerName")
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("PhotosTaken")
+                    b.Property<bool?>("PhotosTaken")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("PropertyCleanedOfDebrisAndDust")
+                    b.Property<bool?>("PropertyCleanedOfDebrisAndDust")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("SaftyGlassInstallCorrectly")
+                    b.Property<bool?>("SaftyGlassInstallCorrectly")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -321,14 +413,14 @@ namespace ASAP.Presistance.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("WindowDoorFramesAndGlassCleaned")
+                    b.Property<bool?>("WindowDoorFramesAndGlassCleaned")
                         .HasColumnType("tinyint(1)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ContractItemId");
 
-                    b.ToTable("Fittings");
+                    b.ToTable("Fittings", (string)null);
                 });
 
             modelBuilder.Entity("ASAP.Domain.Entities.ServiceCall", b =>
@@ -340,10 +432,19 @@ namespace ASAP.Presistance.Migrations
                     b.Property<Guid?>("AttachementHeaderId")
                         .HasColumnType("char(36)");
 
+                    b.Property<Guid?>("ContractItemId")
+                        .HasColumnType("char(36)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CustomerPhoneNumber")
                         .HasColumnType("longtext");
 
                     b.Property<bool?>("Deleted")
@@ -381,9 +482,11 @@ namespace ASAP.Presistance.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ContractItemId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("ServiceCalls");
+                    b.ToTable("ServiceCalls", (string)null);
                 });
 
             modelBuilder.Entity("ASAP.Domain.Entities.Supplier", b =>
@@ -427,7 +530,7 @@ namespace ASAP.Presistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("ASAP.Domain.Entities.Survey", b =>
@@ -436,7 +539,7 @@ namespace ASAP.Presistance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid?>("AttachementId")
+                    b.Property<Guid?>("AttachmentHeaderId")
                         .HasColumnType("char(36)");
 
                     b.Property<int?>("Cill")
@@ -466,6 +569,12 @@ namespace ASAP.Presistance.Migrations
                     b.Property<int?>("Horns")
                         .HasColumnType("int");
 
+                    b.Property<int?>("IntlHeight")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IntlWidth")
+                        .HasColumnType("int");
+
                     b.Property<string>("Location")
                         .HasColumnType("longtext");
 
@@ -482,7 +591,7 @@ namespace ASAP.Presistance.Migrations
 
                     b.HasIndex("ContractItemId");
 
-                    b.ToTable("Surveys");
+                    b.ToTable("Surveys", (string)null);
                 });
 
             modelBuilder.Entity("ASAP.Domain.Entities.User", b =>
@@ -520,7 +629,16 @@ namespace ASAP.Presistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("ASAP.Domain.Entities.Attachment", b =>
+                {
+                    b.HasOne("ASAP.Domain.Entities.AttachmentHeader", "AttachmentHeader")
+                        .WithMany()
+                        .HasForeignKey("AttachmentHeaderId");
+
+                    b.Navigation("AttachmentHeader");
                 });
 
             modelBuilder.Entity("ASAP.Domain.Entities.Contract", b =>
@@ -535,7 +653,7 @@ namespace ASAP.Presistance.Migrations
             modelBuilder.Entity("ASAP.Domain.Entities.ContractItem", b =>
                 {
                     b.HasOne("ASAP.Domain.Entities.Contract", "Contract")
-                        .WithMany()
+                        .WithMany("contractItems")
                         .HasForeignKey("ContractId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -554,9 +672,15 @@ namespace ASAP.Presistance.Migrations
 
             modelBuilder.Entity("ASAP.Domain.Entities.ServiceCall", b =>
                 {
+                    b.HasOne("ASAP.Domain.Entities.ContractItem", "ContractItem")
+                        .WithMany()
+                        .HasForeignKey("ContractItemId");
+
                     b.HasOne("ASAP.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.Navigation("ContractItem");
 
                     b.Navigation("User");
                 });
@@ -568,6 +692,11 @@ namespace ASAP.Presistance.Migrations
                         .HasForeignKey("ContractItemId");
 
                     b.Navigation("ContractItem");
+                });
+
+            modelBuilder.Entity("ASAP.Domain.Entities.Contract", b =>
+                {
+                    b.Navigation("contractItems");
                 });
 #pragma warning restore 612, 618
         }

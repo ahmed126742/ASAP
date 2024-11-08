@@ -1,17 +1,19 @@
-﻿using System.Threading;
-using ASAP.Application.Common.Models;
+﻿using ASAP.Application.Common.Models;
 using ASAP.Application.Services.ContractItems.DTOs;
 using ASAP.Application.Services.User.DTOs;
 using ASAP.Application.Services.User.Survey;
 using ASAP.Application.Services.User.Survey.DTOs.Processing;
 using ASAP.Application.Services.User.Survey.DTOs.Retrieval;
-using ASAP.Infrastructure.Services.Surveyor;
+using ASAP_Task.Authentication.Static;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ASAP_Task.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class SurveyController : ControllerBase
     {
         private readonly ISurveyService _surveyService;
@@ -41,9 +43,15 @@ namespace ASAP_Task.Controllers
         }
 
         [HttpPost("GetSurveys")]
-        public async Task<ActionResult<IList<GetSurveyResponse>>> GetSurveys(ContractItemIdentity request, CancellationToken cancellationToken)
+        public async Task<ActionResult<PagedReponse<GetSurveyResponse>>> GetSurveys(PaginationRequest<GetSurverysRequest,GetSurveyResponse> request, CancellationToken cancellationToken)
         {
             return Ok(await _surveyService.GetSurveys(request, cancellationToken));
+        }
+
+        [HttpPost("GetSurveysByContractItem")]
+        public async Task<ActionResult<IList<GetSurveyResponse>>> GetSurveysByContractItem(ContractItemIdentity request, CancellationToken cancellationToken)
+        {
+            return Ok(await _surveyService.GetSurveysByContractItem(request, cancellationToken));
         }
 
         [HttpPost("UpdateSurvey")]

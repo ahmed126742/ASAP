@@ -7,5 +7,7 @@ namespace ASAP.Application.Services.ContractItems.DTOs.Retrieval
         public Guid Id { get; set; }
 
         public JobStatusEnum ContractItemStatusId { get; set; }
+
+        public string? ContractName { get; set; }
     }
 }

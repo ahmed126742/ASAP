@@ -1,5 +1,7 @@
-﻿using ASAP.Domain.Repositories;
+﻿using ASAP.Application.Repositories;
+using ASAP.Domain.Repositories;
 using ASAP.Domain.Repositories.Common;
+using ASAP.Persistence.Repositories;
 using ASAP.Presistance.Contexts;
 using ASAP.Presistance.Repositores;
 using ASAP.Presistance.Repositores.Common;
@@ -27,6 +29,11 @@ namespace ASAP.Presistance
             services.AddTransient<IContractRepository, ContractRepository>();
             services.AddTransient<IContractItemRepository, ContractItemRepository>();
             services.AddTransient<ISurveyRepository, SurveyRepository>();
+            services.AddTransient<IFittingRepository, FittingRepository>();
+            services.AddTransient<IServiceCallRepository, ServiceCallRepository>();
+            services.AddTransient<IAttachmentRepository, AttachmentRepository>();
+
+
         }
     }
 }

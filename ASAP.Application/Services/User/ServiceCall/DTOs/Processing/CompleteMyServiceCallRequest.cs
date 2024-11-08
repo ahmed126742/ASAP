@@ -9,5 +9,9 @@
         public int? WorkQualityRate { get; set; }
 
         public Guid? AttachementHeaderId { get; set; }
+
+        public string? CustomerName { get; set; }
+
+        public string? CustomerPhoneNumber { get; set; }
     }
 }

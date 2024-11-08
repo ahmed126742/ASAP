@@ -7,12 +7,14 @@ using ASAP.Application.Features.Users.UpdateUser;
 using ASAP.Application.Services;
 using ASAP.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ASAP_Task.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;

@@ -8,6 +8,8 @@
 
         public Guid AttachementHeaderId { get; set; }
 
+        public Guid ContractItemId { get; set; }
+
         public bool AllFramesSquarLevelPlumb { get; set; }
 
         public bool SaftyGlassInstallCorrectly { get; set; }

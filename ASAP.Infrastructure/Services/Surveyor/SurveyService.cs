@@ -2,6 +2,7 @@
 using ASAP.Application.Common.Models;
 using ASAP.Application.Services.ContractItems.DTOs;
 using ASAP.Application.Services.User.DTOs;
+using ASAP.Application.Services.User.Fitting.DTOs.Retrieval;
 using ASAP.Application.Services.User.Survey;
 using ASAP.Application.Services.User.Survey.DTOs.Processing;
 using ASAP.Application.Services.User.Survey.DTOs.Retrieval;
@@ -34,9 +35,11 @@ namespace ASAP.Infrastructure.Services.Surveyor
 
         public async Task<PagedReponse<GetUserJobsResponse>> GetMyJobs(PaginationRequest<GetUserJobsRequest, GetUserJobsResponse> request, CancellationToken cancellationToken)
         {
-            var contractItem = _contractItemRepository.GetAllAsQuarble(x => x.SurveyorId == Guid.NewGuid() && x.Status == (int)JobStatusEnum.ToSurvey);
-            var filteredContractItems = _mapper.Map<List<GetUserJobsResponse>>(await contractItem.ToListAsync(cancellationToken));
-            return new PagedReponse<GetUserJobsResponse>(filteredContractItems, await contractItem.CountAsync(cancellationToken), request.PageNumber, request.PageSize);
+            var filteredContractItems = _contractItemRepository.GetAllAsQuarble(x => x.SurveyorId == request.Filters.UserId && x.Status == (int)JobStatusEnum.ToSurvey)
+                .Include(c => c.Contract)
+                .Select(x => _mapper.Map<GetUserJobsResponse>(x));
+
+            return new PagedReponse<GetUserJobsResponse>(filteredContractItems, await filteredContractItems.CountAsync(cancellationToken), request.PageNumber, request.PageSize);
         }
 
         public async Task<Guid> CreateSurvey(CreateSurveyRequest request, CancellationToken cancellationToken)
@@ -56,7 +59,18 @@ namespace ASAP.Infrastructure.Services.Surveyor
             return _mapper.Map<GetSurveyResponse>(survey);
         }
 
-        public async Task<IList<GetSurveyResponse>> GetSurveys(ContractItemIdentity request, CancellationToken cancellationToken)
+        public async Task<PagedReponse<GetSurveyResponse>> GetSurveys(PaginationRequest<GetSurverysRequest, GetSurveyResponse> request, CancellationToken cancellationToken)
+        {
+            var surveys = _surveyRepository.GetAllAsQuarble();
+            var pagedsurveys = surveys.Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => _mapper.Map<GetSurveyResponse>(x));
+
+            return new PagedReponse<GetSurveyResponse>(pagedsurveys, await surveys.CountAsync(), request.PageNumber, request.PageSize); ;
+
+        }
+
+        public async Task<IList<GetSurveyResponse>> GetSurveysByContractItem(ContractItemIdentity request, CancellationToken cancellationToken)
         {
             var surveys = await _surveyRepository.GetAllAsQuarble(x => x.ContractItemId == request.Id).ToListAsync(cancellationToken);
             if (!surveys.Any())

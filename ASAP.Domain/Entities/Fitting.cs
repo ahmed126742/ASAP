@@ -10,19 +10,19 @@ namespace ASAP.Domain.Entities
 
         public Guid? AttachementHeaderId { get; set; }
 
-        public bool AllFramesSquarLevelPlumb { get; set; }
+        public bool? AllFramesSquarLevelPlumb { get; set; }
 
-        public bool SaftyGlassInstallCorrectly { get; set; }
+        public bool? SaftyGlassInstallCorrectly { get; set; }
 
-        public bool InternalAndExternalMakingGoodComplete { get; set; }
+        public bool? InternalAndExternalMakingGoodComplete { get; set; }
 
-        public bool WindowDoorFramesAndGlassCleaned { get; set; }
+        public bool? WindowDoorFramesAndGlassCleaned { get; set; }
 
-        public bool PropertyCleanedOfDebrisAndDust { get; set; }
+        public bool? PropertyCleanedOfDebrisAndDust { get; set; }
 
-        public bool AllFixingsCorrectlyCarriedOut { get; set; }
+        public bool? AllFixingsCorrectlyCarriedOut { get; set; }
 
-        public bool PhotosTaken { get; set; }
+        public bool? PhotosTaken { get; set; }
 
         public Guid? ContractItemId { get; set; }
 

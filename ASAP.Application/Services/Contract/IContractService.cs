@@ -9,6 +9,8 @@ namespace ASAP.Application.Services.Contract
 
         Task<Guid> CreateContract(CreateContractRequest request, CancellationToken cancellationToken);
 
+        Task ArchiveContracts(ArchiveContractRequest request, CancellationToken cancellationToken);
+
         Task DeleteContractAsync(DeleteContractRequest request, CancellationToken cancellationToken);
 
         Task<GetContractResponse> GetContractAsync(GetContractRequest request, CancellationToken cancellationToken);

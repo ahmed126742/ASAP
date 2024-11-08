@@ -2,6 +2,8 @@
 {
     public class GetUserJobsRequest
     {
+        public Guid? UserId { get; set; }
+
         public string? SearchText { get; set; }
     }
 }

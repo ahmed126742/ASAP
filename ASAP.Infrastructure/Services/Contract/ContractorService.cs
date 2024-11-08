@@ -55,9 +55,10 @@ namespace ASAP.Infrastructure.Services.Contract
 
         public async Task<PagedReponse<GetFilteredContractorsResponse>> GetPagedFilteresContractors(PaginationRequest<GetFilteredContractorsRequest, GetFilteredContractorsResponse> request, CancellationToken cancellationtoken)
         {
-            var contractors = _contractorRepository.GetFilteredContractors(request.Filters.SearchText);
-            var filteredContractors = _mapper.Map<List<GetFilteredContractorsResponse>>(await contractors.ToListAsync(cancellationtoken));
-            return new PagedReponse<GetFilteredContractorsResponse>(filteredContractors, await contractors.CountAsync(), request.PageNumber, request.PageSize);
+            var filteredContractors = _contractorRepository.GetFilteredContractors(request.PageNumber, request.PageSize, request.Filters.SearchText)
+                .Select(x => _mapper.Map<GetFilteredContractorsResponse>(x));
+
+            return new PagedReponse<GetFilteredContractorsResponse>(filteredContractors, await _contractorRepository.GetAllAsQuarble().CountAsync(), request.PageNumber, request.PageSize);
         }
 
         public async Task UpdateContractorAsync(UpdateContractorDto request, CancellationToken cancellationToken)

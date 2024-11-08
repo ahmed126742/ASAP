@@ -8,9 +8,16 @@ namespace ASAP.Application.Services.ContractItems.DTOs
         public ContractTypeEnum? RequirementContractTypeId { get; set; }
         public string? PostalCode { get; set; }
 
+        public JobStatusEnum? Status { get; set; }
+
         public int? ProductionWeek { get; set; }
+
         public DateTime? InstallationDateFrom { get; set; }
         public DateTime? InstallationDateTo { get; set; }
+
+
+        public DateTime? SurveyDateFrom { get; set; }
+        public DateTime? SurveyDateTo { get; set; }
 
         public Guid? FitterId { get; set; }
         public Guid? SurveyorId { get; set; }

@@ -7,20 +7,11 @@ namespace ASAP.Application.Common.Enums
         [Description("ToSurvey")]
         ToSurvey = 1,
 
-        [Description("Surveyed")]
-        Surveyed,
-
         [Description("ToProcess")]
         ToProcess,
 
         [Description("Processed")]
         Processed,
-
-        [Description("PartiallyDelivered")]
-        PartiallyDelivered,
-
-        [Description("Delivered")]
-        Delivered,
 
         [Description("ReadyToInstall")]
         ReadyToInstall,
@@ -28,8 +19,11 @@ namespace ASAP.Application.Common.Enums
         [Description("Booked")]
         Booked,
 
-        [Description("Remarked")]
-        Remarked,
+        [Description("Remake")]
+        Remake,
+
+        [Description("Installed")]
+        Installed,
 
         [Description("Complete")]
         Complete,

@@ -12,14 +12,11 @@
     <Folder Include="Services\Contractor\Validation\" />
     <Folder Include="Services\Contract\Validation\" />
     <Folder Include="Services\Fitting\" />
-    <Folder Include="Services\User\Fitting\Mapping\" />
-    <Folder Include="Services\User\Fitting\Validation\" />
     <Folder Include="Services\Production\DTOs\" />
     <Folder Include="Services\Production\Mapping\" />
     <Folder Include="Services\Production\Validation\" />
     <Folder Include="Services\Supplier\Validation\" />
     <Folder Include="Services\User\Mapping\" />
-    <Folder Include="Services\User\Survey\Mapping\" />
     <Folder Include="Services\User\Survey\Validation\" />
   </ItemGroup>
 

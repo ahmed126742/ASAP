@@ -8,9 +8,9 @@
             public int PageSize { get; set; }
             public int TotalPages => (int)Math.Ceiling((double)TotalItems / PageSize);
 
-            public PagedReponse(List<T> items, int totalItems, int pageNumber, int pageSize)
+            public PagedReponse(IQueryable<T> items, int totalItems, int pageNumber, int pageSize)
             {
-                Items = items;
+                Items = items.ToList();
                 TotalItems = totalItems;
                 PageNumber = pageNumber;
                 PageSize = pageSize;

@@ -52,9 +52,10 @@ namespace ASAP.Infrastructure.Services.User
 
         public async Task<PagedReponse<GetFilteredUsersResponse>> GetPagedFilteresUsers(PaginationRequest<GetFilteredUsersRequest, GetFilteredUsersResponse> request, CancellationToken CancellationToken)
         {
-            var users = _userRepository.GetFilteredUsers(request.Filters.SearchText);
-            var filteredUsers = _mapper.Map<List<GetFilteredUsersResponse>>(await users.ToListAsync());
-            return new PagedReponse<GetFilteredUsersResponse>(filteredUsers, await users.CountAsync(), request.PageNumber, request.PageSize);
+            var filteredUsers = _userRepository.GetFilteredUsers(request.Filters.SearchText)
+                .Select(x => _mapper.Map<GetFilteredUsersResponse>(x));
+
+            return new PagedReponse<GetFilteredUsersResponse>(filteredUsers, await filteredUsers.CountAsync(), request.PageNumber, request.PageSize);
         }
 
         public async Task<IList<GetUserRsponse>> GetUsersByEmails(ICollection<string> emails, CancellationToken cancellationToken)

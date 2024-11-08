@@ -25,6 +25,10 @@ namespace ASAP.Presistance.Contexts
         public DbSet<Fitting> Fittings { get; set; }
 
         public DbSet<ServiceCall> ServiceCalls { get; set; }
+        public DbSet<Attachment> Attachments { get; set; }
+
+        public DbSet<AttachmentHeader> AttachmentHeaders { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

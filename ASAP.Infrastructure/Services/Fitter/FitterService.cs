@@ -1,5 +1,7 @@
 ﻿using ASAP.Application.Common.Enums;
 using ASAP.Application.Common.Models;
+using ASAP.Application.Services.ContractItems.DTOs;
+using ASAP.Application.Services.TaskStatus;
 using ASAP.Application.Services.User.DTOs;
 using ASAP.Application.Services.User.Fitting;
 using ASAP.Application.Services.User.Fitting.DTOs.Processing;
@@ -16,24 +18,42 @@ namespace ASAP.Infrastructure.Services.Fitter
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IFittingRepository _fittingRepository;
+        private readonly IServiceCallRepository _serviceCallRepository;
         private readonly IContractItemRepository _contractItemRepository;
+        private readonly ITaskStatusService _taskStatusService;
         private readonly IMapper _mapper;
 
         public FitterService(
             IUnitOfWork unitOfWork,
             IFittingRepository fittingRepository,
             IContractItemRepository contractItemRepository,
+            IServiceCallRepository serviceCallRepository,
+            ITaskStatusService taskStatusService,
             IMapper mapper)
         {
             _fittingRepository = fittingRepository;
+            _serviceCallRepository = serviceCallRepository;
             _contractItemRepository = contractItemRepository;
+            _taskStatusService = taskStatusService;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
+
         public async Task<Guid> CreateFitting(CreateFittingRequest request, CancellationToken cancellationToken)
         {
+            await _taskStatusService.UpdateContractItemStatusToInstalled(request.ContractItemId, cancellationToken);
             var fittingJob = _mapper.Map<Fitting>(request);
             _fittingRepository.Create(fittingJob);
+            await _unitOfWork.Save(cancellationToken);
+            return fittingJob.Id;
+        }
+
+        public async Task<Guid> CreateOutstandingFitting(CreateOutstandingFittingRequest request, CancellationToken cancellationToken)
+        {
+            await _taskStatusService.UpdateContractItemStatusToRemarked(request.ContractItemId, cancellationToken);
+            var fittingJob = _mapper.Map<Fitting>(request);
+            _fittingRepository.Create(fittingJob);
+            _serviceCallRepository.Create(new Domain.Entities.ServiceCall { ReportedIssue = request.ReportedIssue, ContractItemId = request.ContractItemId});
             await _unitOfWork.Save(cancellationToken);
             return fittingJob.Id;
         }
@@ -49,23 +69,21 @@ namespace ASAP.Infrastructure.Services.Fitter
 
         public async Task<PagedReponse<GetFittingResponse>> GetFittings(PaginationRequest<GetFittingsRequest, GetFittingResponse> request, CancellationToken cancellationToken)
         {
-            var fittings = await _fittingRepository.GetAllAsQuarble().ToListAsync(cancellationToken);
-            if (!fittings.Any())
-                throw new Exception("contract Item does not exist!");
+            var fittings = _fittingRepository.GetAllAsQuarble();
+            var pagedFittingss = fittings.Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => _mapper.Map<GetFittingResponse>(x));
 
-            return _mapper.Map<PagedReponse<GetFittingResponse>>(fittings);
+            return new PagedReponse<GetFittingResponse>(pagedFittingss, await fittings.CountAsync(), request.PageNumber, request.PageSize);;
         }
 
-        public async Task<IList<GetUserJobsResponse>> GetMyFittings(GetUserJobsRequest request, CancellationToken cancellationToken)
+        public async Task<GetFittingResponse> GetFittingByContractItem(ContractItemIdentity request, CancellationToken cancellationToken)
         {
-            var fitterId = Guid.NewGuid();
-            var myFittingsjob = await _fittingRepository.GetAllAsQuarble(
-                    x => x.ContractItem != null 
-                    && x.ContractItem.FitterId == fitterId
-                    && x.Deleted.Value)
-                .ToListAsync(cancellationToken);
+            var surveys = await _fittingRepository.GetAllAsQuarble(x => x.ContractItemId == request.Id).FirstOrDefaultAsync(cancellationToken);
+            if (surveys == null)
+                throw new Exception("contract Item does not exist!");
 
-            return _mapper.Map<List<GetUserJobsResponse>>(myFittingsjob);
+            return _mapper.Map<GetFittingResponse>(surveys);
         }
 
         public async Task UpdateFitting(UpdateFittingRequest request, CancellationToken cancellationToken)
@@ -91,9 +109,11 @@ namespace ASAP.Infrastructure.Services.Fitter
 
         public async Task<PagedReponse<GetUserJobsResponse>> GetMyJobs(PaginationRequest<GetUserJobsRequest, GetUserJobsResponse> request, CancellationToken cancellationToken)
         {
-            var contractItem = _contractItemRepository.GetAllAsQuarble(x => x.FitterId == Guid.NewGuid() && x.Status == (int)JobStatusEnum.Booked);
-            var filteredContractItems = _mapper.Map<List<GetUserJobsResponse>>(await contractItem.ToListAsync(cancellationToken));
-            return new PagedReponse<GetUserJobsResponse>(filteredContractItems, await contractItem.CountAsync(cancellationToken), request.PageNumber, request.PageSize);
+            var filteredContractItems = _contractItemRepository.GetAllAsQuarble(x => x.FitterId == request.Filters.UserId && x.Status == (int)JobStatusEnum.Booked)
+                                .Include(c => c.Contract)
+                                .Select(x => _mapper.Map<GetUserJobsResponse>(x));
+
+            return new PagedReponse<GetUserJobsResponse>(filteredContractItems, await filteredContractItems.CountAsync(cancellationToken), request.PageNumber, request.PageSize);
         }
     }
 }

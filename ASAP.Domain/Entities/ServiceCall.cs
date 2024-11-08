@@ -22,6 +22,14 @@ namespace ASAP.Domain.Entities
 
         public Guid? AttachementHeaderId { get; set; }
 
+        public Guid? ContractItemId { get; set; }
+
+        public ContractItem? ContractItem { get; set; }
+
+        public string? CustomerName { get; set; }
+
+        public string? CustomerPhoneNumber { get; set; }
+
         public User? User { get; set; }
     }
 }

@@ -277,6 +277,7 @@ namespace ASAP_Task.WebAPI.Controllers.Identity
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JWTConfig:Secret_Key").Value);
             // Token Descriptor to input all need data to jwt
+            var expiry = DateTime.UtcNow.Add(TimeSpan.Parse(_configuration.GetSection("JWTConfig:ExpiryTimeFrame").Value));
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(await GetUserClaimsAsync(user)),
@@ -293,7 +294,7 @@ namespace ASAP_Task.WebAPI.Controllers.Identity
             user.IsRevoked = false;
             user.IsUsed = false;
             user.AddDate = DateTime.Now;
-            user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(5);
+            user.RefreshTokenExpiryTime = expiry.AddMinutes(5);
 
             await _userManager.UpdateAsync(user);
 
@@ -311,7 +312,7 @@ namespace ASAP_Task.WebAPI.Controllers.Identity
 
         private async Task<List<Claim>> GetUserClaimsAsync(ApplicationUser user)
         {
-            var userResponse = new User();//  await _userController.GetUserByEmail(user.Email);
+            var userResponse = await _userController.GetUserByEmail(user.Email);
             var options = new IdentityOptions();
             var claims = new List<Claim>
             {

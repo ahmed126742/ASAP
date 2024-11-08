@@ -10,6 +10,10 @@ namespace ASAP.Domain.Entities
 
         public int? Height { get; set; }
 
+        public int? IntlWidth { get; set; }
+
+        public int? IntlHeight { get; set; }
+
         public int? Cill { get; set; }
 
         public int? Horns { get; set; }
@@ -18,7 +22,7 @@ namespace ASAP.Domain.Entities
 
         public string? Extras { get; set; }
 
-        public Guid? AttachementId { get; set; }
+        public Guid? AttachmentHeaderId { get; set; }
 
         public Guid? ContractItemId { get; set; }
 

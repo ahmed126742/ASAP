@@ -5,6 +5,6 @@ namespace ASAP.Domain.Repositories
 {
     public interface IContractorRepository : IBaseEntityRepository<Contractor>
     {
-        IQueryable<Contractor> GetFilteredContractors(string? searchText = "");
+        IQueryable<Contractor> GetFilteredContractors(int page, int rows, string? searchText = "");
     }
 }

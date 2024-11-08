@@ -3,11 +3,13 @@ using ASAP.Application.Features.Users.GetFilteredUsers;
 using ASAP.Application.Services.Supplier;
 using ASAP.Application.Services.Supplier.DTOs.Processing;
 using ASAP.Application.Services.Supplier.DTOs.Retreival;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace ASAP_Task.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SupplierController : ControllerBase
     {
         private readonly ISupplierService _supplierService;

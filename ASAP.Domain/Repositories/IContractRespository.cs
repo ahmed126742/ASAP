@@ -5,6 +5,6 @@ namespace ASAP.Domain.Repositories
 {
     public interface IContractRepository : IBaseEntityRepository<Entities.Contract>
     {
-        IQueryable<Domain.Entities.Contract> GetFilteredContracts(int pageNumber, int pageSize, string? searchText = null, int? ContractTypeId = null, string? Address = null);
+        IQueryable<Domain.Entities.Contract> GetFilteredContracts(int pageNumber, int pageSize, string? searchText = null, int? ContractTypeId = null, bool? IsArchived = null, string? Address = null);
     }
 }

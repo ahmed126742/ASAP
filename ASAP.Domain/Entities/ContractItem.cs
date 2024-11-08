@@ -6,7 +6,7 @@ namespace ASAP.Domain.Entities
     {
         public string? Address { get; set; }
 
-        public int? Requirement { get; set; }
+        public int? RequirementContractTypeId { get; set; }
 
         public string? PostalCode { get; set; }
 
@@ -15,6 +15,10 @@ namespace ASAP.Domain.Entities
         public DateTime? InstallationDateFrom { get; set; }
 
         public DateTime? InstallationDateTo { get; set; }
+
+        public DateTime? SurveyDateFrom { get; set; }
+
+        public DateTime? SurveyDateTo { get; set; }
 
         public int? Status { get; set; }
 

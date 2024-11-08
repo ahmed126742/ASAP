@@ -10,6 +10,10 @@
 
         public string EndDate { get; set; }
 
+        public DateTime? SurveyDateFrom { get; set; }
+
+        public DateTime? SurveyDateTo { get; set; }
+
         public string Customer { get; set; }
 
         public string PostCode { get; set; }

@@ -4,6 +4,7 @@ using ASAP.Application.Features.Users.GetFilteredUsers;
 using ASAP.Application.Services.Supplier;
 using ASAP.Application.Services.Supplier.DTOs.Processing;
 using ASAP.Application.Services.Supplier.DTOs.Retreival;
+using ASAP.Domain.Entities;
 using ASAP.Domain.Repositories;
 using ASAP.Domain.Repositories.Common;
 using AutoMapper;
@@ -39,9 +40,11 @@ namespace ASAP.Infrastructure.Services.Supplier
         public async Task<PagedReponse<GetFilteredSuppliersResponse>> GetPagedFilteresSuppliers(PaginationRequest<GetFilteredSuppliersRequest, GetFilteredUsersResponse> request, CancellationToken cancellationtoken)
         {
             int? supplierTypeId = request.Filters.SupplierTypeId == null ? null : (int)request.Filters.SupplierTypeId;
-            var suppliers = _supplierRepository.GetFilteredSuppliers(request.Filters.SearchText, supplierTypeId);
-            var filteredSuppliers = _mapper.Map<List<GetFilteredSuppliersResponse>>(await suppliers.OrderBy(x=>x.Sorted).ToListAsync(cancellationtoken));
-            return new PagedReponse<GetFilteredSuppliersResponse>(filteredSuppliers, await suppliers.CountAsync(), request.PageNumber, request.PageSize);
+            var filteredSuppliers = _supplierRepository.GetFilteredSuppliers(request.Filters.SearchText, supplierTypeId)
+                .OrderBy(x => x.Sorted)
+                .Select(x => _mapper.Map<GetFilteredSuppliersResponse>(x));
+
+            return new PagedReponse<GetFilteredSuppliersResponse>(filteredSuppliers, await filteredSuppliers.CountAsync(cancellationtoken), request.PageNumber, request.PageSize);
         }
 
         public async Task<Guid> CreateSupplierAsync(CreateSupplierRequest request, CancellationToken cancellationToken)

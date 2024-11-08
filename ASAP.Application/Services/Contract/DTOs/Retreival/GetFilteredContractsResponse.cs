@@ -12,6 +12,8 @@ namespace ASAP.Application.Services.Contract.DTOs.Retreival
 
         public ContractTypeEnum ContractTypeId { get; set; }
 
+        public bool IsArchived { get; set; }
+
         public int ContractItemsCount { get; set; }
 
         public int CompletionCount  { get; set; }

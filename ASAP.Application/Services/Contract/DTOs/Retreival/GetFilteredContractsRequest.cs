@@ -8,6 +8,8 @@ namespace ASAP.Application.Services.Contract.DTOs.Retreival
 
         public ContractTypeEnum ContractTypeId { get; set; }
 
+        public bool? IsArchived { get; set; }
+
         public string? Address { get; set; }
     }
 }

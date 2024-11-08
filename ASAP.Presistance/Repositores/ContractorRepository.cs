@@ -12,9 +12,9 @@ namespace ASAP.Presistance.Repositores
         {
         }
 
-        public IQueryable<Contractor> GetFilteredContractors(string? searchText = "")
+        public IQueryable<Contractor> GetFilteredContractors(int page, int rows, string? searchText = "")
         {
-            return GetAllAsQuarble(FilterContractors(searchText));
+            return GetQuarableAsPaginated(page, rows, FilterContractors(searchText));
         }
 
         private Expression<Func<Contractor, bool>> FilterContractors(string? searchText = "")
