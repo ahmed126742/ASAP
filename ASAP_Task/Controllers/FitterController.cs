@@ -52,7 +52,7 @@ namespace ASAP_Task.Controllers
         }
 
         [HttpPost("Admin/GetFitters")]
-        public async Task<ActionResult<PagedReponse<GetFittingResponse>>> GetFitters(PaginationRequest<GetFittingsRequest, GetFittingResponse> request, CancellationToken cancellationToken)
+        public async Task<ActionResult<PagedReponse<GetFittingsResponse>>> GetFitters(PaginationRequest<GetFittingsRequest, GetFittingsResponse> request, CancellationToken cancellationToken)
         {
             var result = await _fitterService.GetFittings(request, cancellationToken);
             return Ok(result);

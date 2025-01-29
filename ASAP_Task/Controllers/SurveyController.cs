@@ -43,13 +43,13 @@ namespace ASAP_Task.Controllers
         }
 
         [HttpPost("GetSurveys")]
-        public async Task<ActionResult<PagedReponse<GetSurveyResponse>>> GetSurveys(PaginationRequest<GetSurverysRequest,GetSurveyResponse> request, CancellationToken cancellationToken)
+        public async Task<ActionResult<PagedReponse<GetSurveysReponse>>> GetSurveys(PaginationRequest<GetSurverysRequest, GetSurveysReponse> request, CancellationToken cancellationToken)
         {
             return Ok(await _surveyService.GetSurveys(request, cancellationToken));
         }
 
         [HttpPost("GetSurveysByContractItem")]
-        public async Task<ActionResult<IList<GetSurveyResponse>>> GetSurveysByContractItem(ContractItemIdentity request, CancellationToken cancellationToken)
+        public async Task<ActionResult<GetSurveysByContractItemResponse>> GetSurveysByContractItem(ContractItemIdentity request, CancellationToken cancellationToken)
         {
             return Ok(await _surveyService.GetSurveysByContractItem(request, cancellationToken));
         }

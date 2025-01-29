@@ -22,6 +22,10 @@ namespace ASAP.Domain.Entities
 
         public string? Extras { get; set; }
 
+        public string? GlassIn { get; set; }
+
+        public string? GlassOut { get; set; }
+
         public Guid? AttachmentHeaderId { get; set; }
 
         public Guid? ContractItemId { get; set; }

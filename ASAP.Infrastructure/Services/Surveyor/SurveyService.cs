@@ -19,18 +19,21 @@ namespace ASAP.Infrastructure.Services.Surveyor
         private readonly ISurveyRepository _surveyRepository;
         private readonly IMapper _mapper;
         private readonly IContractItemRepository _contractItemRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public SurveyService(
             IContractItemRepository contractItemRepository,
             IMapper mapper,
             ISurveyRepository surveyRepository,
+            IUserRepository userRepository,
             IUnitOfWork unitOfWork)
         {
             _surveyRepository = surveyRepository;
             _contractItemRepository = contractItemRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _userRepository = userRepository;
         }
 
         public async Task<PagedReponse<GetUserJobsResponse>> GetMyJobs(PaginationRequest<GetUserJobsRequest, GetUserJobsResponse> request, CancellationToken cancellationToken)
@@ -59,24 +62,51 @@ namespace ASAP.Infrastructure.Services.Surveyor
             return _mapper.Map<GetSurveyResponse>(survey);
         }
 
-        public async Task<PagedReponse<GetSurveyResponse>> GetSurveys(PaginationRequest<GetSurverysRequest, GetSurveyResponse> request, CancellationToken cancellationToken)
+        public async Task<PagedReponse<GetSurveysReponse>> GetSurveys(PaginationRequest<GetSurverysRequest, GetSurveysReponse> request, CancellationToken cancellationToken)
         {
             var surveys = _surveyRepository.GetAllAsQuarble();
-            var pagedsurveys = surveys.Skip((request.PageNumber - 1) * request.PageSize)
+            var pagedsurveys = surveys.Include(x => x.ContractItem)
+                .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
-                .Select(x => _mapper.Map<GetSurveyResponse>(x));
+                .Select(x => _mapper.Map<GetSurveysReponse>(x));
 
-            return new PagedReponse<GetSurveyResponse>(pagedsurveys, await surveys.CountAsync(), request.PageNumber, request.PageSize); ;
+            var result =  new PagedReponse<GetSurveysReponse>(pagedsurveys, await surveys.CountAsync(), request.PageNumber, request.PageSize); ;
+            
+            var users = await _userRepository.GetAllAsQuarble(
+                x => result.Items.Select(x=>x.SurveyorId).Contains(x.Id))
+                .ToListAsync();
 
+            foreach (var item in result.Items)
+            {
+                var surveyor = users.FirstOrDefault(x => x.Id == item.SurveyorId);
+                if (surveyor != null)
+                    item.SurveyorName = string.Concat(surveyor?.FirstName, " ", surveyor?.LastName);
+            }
+
+            return result;
         }
 
-        public async Task<IList<GetSurveyResponse>> GetSurveysByContractItem(ContractItemIdentity request, CancellationToken cancellationToken)
+        public async Task<GetSurveysByContractItemResponse> GetSurveysByContractItem(ContractItemIdentity request, CancellationToken cancellationToken)
         {
-            var surveys = await _surveyRepository.GetAllAsQuarble(x => x.ContractItemId == request.Id).ToListAsync(cancellationToken);
+            var surveys = await _surveyRepository.GetAllAsQuarble(x => x.ContractItemId == request.Id)
+                .Include(x => x.ContractItem)
+                .ToListAsync(cancellationToken);
+
             if (!surveys.Any())
                 throw new Exception("contract Item does not exist!");
 
-            return _mapper.Map<List<GetSurveyResponse>>(surveys);
+            var contractItem = surveys.FirstOrDefault().ContractItem;
+            var user = await _userRepository.Get(contractItem.SurveyorId.GetValueOrDefault(), cancellationToken);
+            var result = new GetSurveysByContractItemResponse
+            {
+                PostalCode = contractItem.PostalCode,
+                SurveyDateFrom = contractItem.SurveyDateFrom,
+                SurveyDateTo = contractItem.SurveyDateTo,
+                SurveyorId = contractItem.SurveyorId,
+                SurveyorName = user?.FirstName + " " + user?.LastName,
+                Surveys = _mapper.Map<List<GetSurveyResponse>>(surveys),
+            };
+            return result;
         }
 
         public async Task UpdateSurvey(UpdateSurveyRequest request, CancellationToken cancellationToken)

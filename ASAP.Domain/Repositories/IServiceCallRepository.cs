@@ -6,5 +6,7 @@ namespace ASAP.Domain.Repositories
     public interface IServiceCallRepository :IBaseEntityRepository<ServiceCall>
     {
         Task<ServiceCall> GetServiceCallByContractItemAsync(Guid contractItemId, CancellationToken cancellationToken);
+
+        Task DeleteServiceCallByContractItem(Guid contractItemId, CancellationToken cancellationToken);
     }
 }

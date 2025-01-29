@@ -4,6 +4,7 @@ using ASAP.Domain.Repositories;
 using ASAP.Presistance.Contexts;
 using ASAP.Presistance.Repositores.Common;
 using Azure;
+using Azure.Core;
 
 namespace ASAP.Presistance.Repositores
 {
@@ -34,6 +35,15 @@ namespace ASAP.Presistance.Repositores
             && (string.IsNullOrEmpty(address) || string.IsNullOrEmpty(x.Address) || x.Address.ToLower().Contains(address.ToLower()))
             && (installationDateFrom == null || installationDateFrom <= x.InstallationDateFrom)
             && (installationDateTo == null || installationDateTo >= x.InstallationDateTo);
+        }
+
+        public async Task<ContractItem> GetContractItem(Guid id, CancellationToken cancellationToken)
+        {
+            var contractItem = await Get(id, cancellationToken);
+            if (contractItem == null)
+                throw new Exception("Production Id does not exist");
+
+            return contractItem;
         }
     }
 }

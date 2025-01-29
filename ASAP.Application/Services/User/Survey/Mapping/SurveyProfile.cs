@@ -13,11 +13,17 @@ namespace ASAP.Application.Services.User.Survey.Mapping
             CreateMap<CreateSurveyRequest, Domain.Entities.Survey>();
             CreateMap<UpdateSurveyRequest, Domain.Entities.Survey>();
             CreateMap<Domain.Entities.Survey, GetSurveyResponse>();
+            CreateMap<Domain.Entities.Survey, GetSurveysReponse>()
+                .ForMember(dst => dst.SurveyDateFrom, opt => opt.MapFrom(src => src.ContractItem.SurveyDateFrom))
+                .ForMember(dst => dst.SurveyDateTo, opt => opt.MapFrom(src => src.ContractItem.SurveyDateFrom))
+                .ForMember(dst => dst.SurveyorId, opt => opt.MapFrom(src => src.ContractItem.SurveyorId))
+                .ForMember(dst => dst.PostalCode, opt => opt.MapFrom(src => src.ContractItem.PostalCode));
+
             CreateMap<Domain.Entities.ContractItem, GetUserJobsResponse>()
                 .ForMember(dst => dst.PostCode, opt => opt.MapFrom(src => src.Contract.PostCode))
                 .ForMember(dst => dst.StartDate, opt => opt.MapFrom(src => src.InstallationDateFrom))
                 .ForMember(dst => dst.EndDate, opt => opt.MapFrom(src => src.InstallationDateTo))
-                 .ForMember(dst => dst.SurveyDateFrom, opt => opt.MapFrom(src => src.SurveyDateFrom))
+                .ForMember(dst => dst.SurveyDateFrom, opt => opt.MapFrom(src => src.SurveyDateFrom))
                 .ForMember(dst => dst.SurveyDateTo, opt => opt.MapFrom(src => src.SurveyDateTo))
                 .ForMember(dst => dst.JobTypeId, opt => opt.MapFrom(src => src.RequirementContractTypeId))
                 .ForMember(dst => dst.JobId, opt => opt.MapFrom(src => src.Id))

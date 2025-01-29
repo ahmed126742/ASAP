@@ -1,8 +1,8 @@
 ﻿namespace ASAP.Application.Services.User.Fitting.DTOs.Retrieval
 {
-    public class GetFittingResponse : FittingDto
+    public class GetFittingsResponse : FittingDto
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         public DateTime? FittingDateFrom { get; set; }
 

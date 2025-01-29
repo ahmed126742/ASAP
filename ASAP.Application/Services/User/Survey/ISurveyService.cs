@@ -11,9 +11,9 @@ namespace ASAP.Application.Services.User.Survey
         
         Task<GetSurveyResponse> GetSurvey(GetSurveyRequest request, CancellationToken cancellationToken);
 
-        Task<PagedReponse<GetSurveyResponse>> GetSurveys(PaginationRequest<GetSurverysRequest, GetSurveyResponse> request, CancellationToken cancellationToken);
+        Task<PagedReponse<GetSurveysReponse>> GetSurveys(PaginationRequest<GetSurverysRequest, GetSurveysReponse> request, CancellationToken cancellationToken);
 
-        Task<IList<GetSurveyResponse>> GetSurveysByContractItem(ContractItemIdentity request, CancellationToken cancellationToken);
+        Task<GetSurveysByContractItemResponse> GetSurveysByContractItem(ContractItemIdentity request, CancellationToken cancellationToken);
 
         Task UpdateSurvey(UpdateSurveyRequest request, CancellationToken cancellationToken);
 

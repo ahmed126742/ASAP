@@ -5,5 +5,6 @@ namespace ASAP.Domain.Repositories
 {
     public interface IFittingRepository : IBaseEntityRepository<Fitting>
     {
+        Task DeleteFittingByContractItem(Guid contractItemId, CancellationToken cancellationToken);
     }
 }

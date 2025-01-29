@@ -5,5 +5,6 @@ namespace ASAP.Domain.Repositories
 {
     public interface ISurveyRepository : IBaseEntityRepository<Survey>
     {
+        Task DeleteSurveyByContractItem(Guid contractItemId, CancellationToken cancellationToken);
     }
 }

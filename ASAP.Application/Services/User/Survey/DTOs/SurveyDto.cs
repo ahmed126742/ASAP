@@ -1,6 +1,4 @@
-﻿using ASAP.Domain.Entities;
-
-namespace ASAP.Application.Services.User.Survey.DTOs
+﻿namespace ASAP.Application.Services.User.Survey.DTOs
 {
     public class SurveyDto
     {
@@ -19,6 +17,10 @@ namespace ASAP.Application.Services.User.Survey.DTOs
         public int? Horns { get; set; }
 
         public string? Glass { get; set; }
+
+        public string? GlassIn { get; set; }
+
+        public string? GlassOut { get; set; }
 
         public string? Extras { get; set; }
 

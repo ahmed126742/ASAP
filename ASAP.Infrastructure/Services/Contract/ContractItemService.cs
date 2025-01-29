@@ -1,4 +1,5 @@
-﻿using ASAP.Application.Common.Models;
+﻿using ASAP.Application.Common.Enums;
+using ASAP.Application.Common.Models;
 using ASAP.Application.Services.Contract.DTOs;
 using ASAP.Application.Services.ContractItems;
 using ASAP.Application.Services.ContractItems.DTOs;
@@ -15,6 +16,9 @@ namespace ASAP.Infrastructure.Services.Contract
     public class ContractItemService : IContractItemsService
     {
         private readonly IContractItemRepository _contractItemRepository;
+        private readonly IServiceCallRepository _serviceCallRepository;
+        private readonly ISurveyRepository _surveyRepository;
+        private readonly IFittingRepository _fittingRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -22,12 +26,18 @@ namespace ASAP.Infrastructure.Services.Contract
             IContractItemRepository contractItemRepository,
             IUserRepository userRepository,
             IMapper mapper,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IFittingRepository fittingRepository,
+            IServiceCallRepository serviceCallRepository,
+            ISurveyRepository surveyRepository)
         {
             _contractItemRepository = contractItemRepository;
             _userRepository = userRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _fittingRepository = fittingRepository;
+            _surveyRepository = surveyRepository;
+            _serviceCallRepository = serviceCallRepository;
         }
 
         public async Task<Guid> CreateContractItem(CreateContractItemRequest request, CancellationToken cancellationToken)
@@ -55,10 +65,10 @@ namespace ASAP.Infrastructure.Services.Contract
 
         public async Task DeleteContractItem(ContractItemIdentity request, CancellationToken cancellationToken)
         {
-            var contractItem = await _contractItemRepository.Get(request.Id, cancellationToken);
-            if (contractItem == null)
-                throw new Exception("Production Id does not exist");
-
+            var contractItem = await _contractItemRepository.GetContractItem(request.Id, cancellationToken);
+            await _fittingRepository.DeleteFittingByContractItem(request.Id, cancellationToken);
+            await _serviceCallRepository.DeleteServiceCallByContractItem(request.Id, cancellationToken);
+            await _surveyRepository.DeleteSurveyByContractItem(request.Id, cancellationToken);
             _contractItemRepository.Delete(contractItem);
             await _unitOfWork.Save(cancellationToken);
         }
@@ -85,10 +95,10 @@ namespace ASAP.Infrastructure.Services.Contract
             foreach (var contractItemStatus in contractItemsStatus)
             {
                 result.ViewAll = result.ViewAll + 1;
-                result.ViewInComplete = contractItemStatus == 8 ? result.ViewInComplete + 1 : result.ViewInComplete + 0;
-                result.ViewRemake = contractItemStatus == 6 ? result.ViewRemake + 1 : result.ViewRemake + 0;
-                result.ViewInComplete = contractItemStatus != 8 ? result.ViewInComplete + 1 : result.ViewInComplete + 0;
-                result.ViewOnHold = contractItemStatus == 9 ? result.ViewOnHold + 1 : result.ViewOnHold + 0;
+                result.ViewCompleted = contractItemStatus == (int)JobStatusEnum.Complete ? result.ViewCompleted + 1 : result.ViewCompleted + 0;
+                result.ViewRemake = contractItemStatus == (int)JobStatusEnum.Remake ? result.ViewRemake + 1 : result.ViewRemake + 0;
+                result.ViewInComplete = contractItemStatus != (int)JobStatusEnum.Complete ? result.ViewInComplete + 1 : result.ViewInComplete + 0;
+                result.ViewOnHold = contractItemStatus == (int)JobStatusEnum.OnHold ? result.ViewOnHold + 1 : result.ViewOnHold + 0;
             }
             return result;
         }

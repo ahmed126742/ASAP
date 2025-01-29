@@ -17,5 +17,14 @@ namespace ASAP.Presistance.Repositores
              var serviceCall =  await GetAllAsQuarble().FirstOrDefaultAsync(c=>c.ContractItemId == contractItemId, cancellationToken);
             return serviceCall;
         }
+
+        public async Task DeleteServiceCallByContractItem(Guid contractItemId, CancellationToken cancellationToken)
+        {
+            var ServiceCalls = await GetAllAsQuarble(x => x.ContractItemId == contractItemId).ToListAsync(cancellationToken);
+            if (!ServiceCalls.Any())
+                return;
+
+            _context.RemoveRange(ServiceCalls);
+        }
     }
 }

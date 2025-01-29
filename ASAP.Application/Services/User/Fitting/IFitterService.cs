@@ -15,8 +15,8 @@ namespace ASAP.Application.Services.User.Fitting
 
         Task<GetFittingResponse> GetFittingByContractItem(ContractItemIdentity request,  CancellationToken cancellationToken);
 
-        Task<PagedReponse<GetFittingResponse>> GetFittings(PaginationRequest<GetFittingsRequest, GetFittingResponse> request, CancellationToken cancellationToken);
-
+        Task<PagedReponse<GetFittingsResponse>> GetFittings(PaginationRequest<GetFittingsRequest, GetFittingsResponse> request, CancellationToken cancellationToken);
+        
         Task UpdateFitting(UpdateFittingRequest request, CancellationToken cancellationToken);
 
         Task DeleteFitting(DeleteFittingRequest request, CancellationToken cancellationToken);

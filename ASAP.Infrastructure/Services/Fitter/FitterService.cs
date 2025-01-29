@@ -22,6 +22,7 @@ namespace ASAP.Infrastructure.Services.Fitter
         private readonly IContractItemRepository _contractItemRepository;
         private readonly ITaskStatusService _taskStatusService;
         private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
 
         public FitterService(
             IUnitOfWork unitOfWork,
@@ -29,6 +30,7 @@ namespace ASAP.Infrastructure.Services.Fitter
             IContractItemRepository contractItemRepository,
             IServiceCallRepository serviceCallRepository,
             ITaskStatusService taskStatusService,
+            IUserRepository userRepository,
             IMapper mapper)
         {
             _fittingRepository = fittingRepository;
@@ -37,6 +39,7 @@ namespace ASAP.Infrastructure.Services.Fitter
             _taskStatusService = taskStatusService;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _userRepository = userRepository;
         }
 
         public async Task<Guid> CreateFitting(CreateFittingRequest request, CancellationToken cancellationToken)
@@ -53,7 +56,7 @@ namespace ASAP.Infrastructure.Services.Fitter
             await _taskStatusService.UpdateContractItemStatusToRemarked(request.ContractItemId, cancellationToken);
             var fittingJob = _mapper.Map<Fitting>(request);
             _fittingRepository.Create(fittingJob);
-            _serviceCallRepository.Create(new Domain.Entities.ServiceCall { ReportedIssue = request.ReportedIssue, ContractItemId = request.ContractItemId});
+            _serviceCallRepository.Create(new Domain.Entities.ServiceCall { ReportedIssue = request.ReportedIssue, ContractItemId = request.ContractItemId });
             await _unitOfWork.Save(cancellationToken);
             return fittingJob.Id;
         }
@@ -67,23 +70,40 @@ namespace ASAP.Infrastructure.Services.Fitter
             return _mapper.Map<GetFittingResponse>(fitting);
         }
 
-        public async Task<PagedReponse<GetFittingResponse>> GetFittings(PaginationRequest<GetFittingsRequest, GetFittingResponse> request, CancellationToken cancellationToken)
+        public async Task<PagedReponse<GetFittingsResponse>> GetFittings(PaginationRequest<GetFittingsRequest, GetFittingsResponse> request, CancellationToken cancellationToken)
         {
             var fittings = _fittingRepository.GetAllAsQuarble();
-            var pagedFittingss = fittings.Skip((request.PageNumber - 1) * request.PageSize)
+            var pagedFittingss = fittings.Include(x => x.ContractItem)
+                .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
-                .Select(x => _mapper.Map<GetFittingResponse>(x));
+                .Select(x => _mapper.Map<GetFittingsResponse>(x));
 
-            return new PagedReponse<GetFittingResponse>(pagedFittingss, await fittings.CountAsync(), request.PageNumber, request.PageSize);;
+            var result = new PagedReponse<GetFittingsResponse>(pagedFittingss, await fittings.CountAsync(), request.PageNumber, request.PageSize); ;
+            var users = await _userRepository.GetAllAsQuarble(
+                x => result.Items.Select(x => x.FitterId).Contains(x.Id))
+                .ToListAsync();
+
+            foreach (var item in result.Items)
+            {
+                var fitter = users.FirstOrDefault(x => x.Id == item.FitterId);
+                if (fitter != null)
+                    item.FitterName = string.Concat(fitter?.FirstName, " ", fitter?.LastName);
+            }
+            return result;
         }
 
         public async Task<GetFittingResponse> GetFittingByContractItem(ContractItemIdentity request, CancellationToken cancellationToken)
         {
-            var surveys = await _fittingRepository.GetAllAsQuarble(x => x.ContractItemId == request.Id).FirstOrDefaultAsync(cancellationToken);
-            if (surveys == null)
+            var fitting = await _fittingRepository.GetAllAsQuarble(x => x.ContractItemId == request.Id)
+                .Include(x => x.ContractItem)
+                .FirstOrDefaultAsync(cancellationToken);
+            if (fitting == null)
                 throw new Exception("contract Item does not exist!");
 
-            return _mapper.Map<GetFittingResponse>(surveys);
+            var user = await _userRepository.Get(fitting.ContractItem.FitterId.GetValueOrDefault(), cancellationToken);
+            var result = _mapper.Map<GetFittingResponse>(fitting);
+            result.FitterName = user?.FirstName + " " + user?.LastName;
+            return result;
         }
 
         public async Task UpdateFitting(UpdateFittingRequest request, CancellationToken cancellationToken)
