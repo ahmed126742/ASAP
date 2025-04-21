@@ -5,9 +5,8 @@ namespace ASAP.Application.Services.ContractItems.DTOs.Retrieval
     public class GetContractItemResponse : ContractItemDto
     {
         public Guid Id { get; set; }
-
+        public int ContractItemNumber { get; set; }
         public JobStatusEnum ContractItemStatusId { get; set; }
-
         public string? ContractName { get; set; }
     }
 }

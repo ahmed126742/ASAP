@@ -12,13 +12,13 @@ namespace ASAP.Application.Services
     {
         Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request, CancellationToken cancellationToken);
 
-        Task DeleteUserAsync(DeleteUserRequest request, CancellationToken cancellationToken);
+        Task<DeleteUserRepons> DeleteUserAsync(DeleteUserRequest request, CancellationToken cancellationToken);
 
         Task<IList<GetUserRsponse>> GetUsersByEmails(ICollection<string> emails, CancellationToken cancellationToken);
 
         Task<GetUserRsponse> GetUserAsync(GetUserRequest request, CancellationToken cancellationToken);
 
-        Task UpdateUserAsync(UpdateUserRequest request, CancellationToken cancellationToken);
+        Task<UpdateUserResponse> UpdateUserAsync(UpdateUserRequest request, CancellationToken cancellationToken);
 
         Task<ICollection<string>> GetUsersEmails(CancellationToken cancellationToken);
 

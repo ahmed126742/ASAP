@@ -6,6 +6,7 @@ using ASAP.Application.Features.Users.GetUser;
 using ASAP.Application.Features.Users.UpdateUser;
 using ASAP.Application.Services;
 using ASAP.Domain.Entities;
+using ASAP_Task.WebAPI.Authentication.Context;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +20,16 @@ namespace ASAP_Task.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IUserService _userService;
+        private readonly UserApplicationManager _userManager;
+
         public UserController(
             IMediator mediator,
-            IUserService userService)
+            IUserService userService,
+            UserApplicationManager userApplicationManager)
         {
             _mediator = mediator;
             _userService = userService;
+            _userManager = userApplicationManager;
         }
 
         [HttpPost("GetUser")]
@@ -32,8 +37,8 @@ namespace ASAP_Task.Controllers
         {
 
             return Ok(await _mediator.Send(request, cancellationToken));
-        } 
-        
+        }
+
         [HttpPost("GetUserByEmail")]
         public async Task<User> GetUserByEmail(string email)
         {
@@ -56,14 +61,30 @@ namespace ASAP_Task.Controllers
         [HttpPost("UpdateUser")]
         public async Task<ActionResult> UpdateUser(UpdateUserRequest request, CancellationToken cancellationToken)
         {
-            await _mediator.Send(request, cancellationToken);
+            var userResponse = await _mediator.Send(request, cancellationToken);
+            if (userResponse.Email != request.Email)
+            {
+                var applicationUser = await _userManager.FindByEmailAsync(userResponse.Email!);
+                if (applicationUser != null)
+                {
+                    applicationUser.Email = request.Email;
+                    applicationUser.UserName = request.Email;
+
+                    await _userManager.UpdateAsync(applicationUser);
+                }
+            }
             return Ok();
         }
 
         [HttpPost("DeleteUser")]
         public async Task<ActionResult> DeleteUser(DeleteUserRequest request, CancellationToken cancellationToken)
         {
-            await _mediator.Send(request, cancellationToken);
+            var result = await _mediator.Send(request, cancellationToken);
+            if (result?.Email != null)
+            {
+                var applicationUser = await _userManager.FindByEmailAsync(result.Email);
+                await _userManager.DeleteAsync(applicationUser);
+            }
             return Ok();
         }
     }

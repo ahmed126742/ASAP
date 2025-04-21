@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using ASAP.Application.Common;
 using ASAP.Application.Common.Enums;
 using ASAP.Application.Common.Models;
@@ -11,6 +12,7 @@ using ASAP.Domain.Repositories;
 using ASAP.Domain.Repositories.Common;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace ASAP.Infrastructure.Services.Contract
 {
@@ -18,6 +20,9 @@ namespace ASAP.Infrastructure.Services.Contract
     {
         private readonly IContractRepository _contractRepository;
         private readonly IContractItemRepository _contractItemRepository;
+        private readonly IServiceCallRepository _servicCallRepository;
+        private readonly ISurveyRepository _surveyRepository;
+        private readonly IFittingRepository _fittingRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
@@ -25,12 +30,18 @@ namespace ASAP.Infrastructure.Services.Contract
             IContractRepository contractRepository,
             IContractItemRepository contractItemRepository,
             IMapper mapper,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IServiceCallRepository servicCallRepository,
+            ISurveyRepository surveyRepository,
+            IFittingRepository fittingRepository)
         {
             _contractRepository = contractRepository;
             _contractItemRepository = contractItemRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _servicCallRepository = servicCallRepository;
+            _surveyRepository = surveyRepository;
+            _fittingRepository = fittingRepository;
         }
         public async Task<Guid> CreateContract(CreateContractRequest request, CancellationToken cancellationToken)
         {
@@ -57,8 +68,63 @@ namespace ASAP.Infrastructure.Services.Contract
             if (contract == null)
                 throw new NotFoundException("Contract Id deos not exist!");
 
+            await DeleteContractItemAsync(contract.Id, cancellationToken);
+
             _contractRepository.Delete(contract);
             await _unitOfWork.Save(cancellationToken);
+        }
+
+        private async Task DeleteContractItemAsync(Guid contractId, CancellationToken cancellationToken)
+        {
+            var contractItems = await _contractItemRepository.GetAllAsQuarble()
+                .Where(x => x.ContractId == contractId)
+                .ToListAsync(cancellationToken);
+            var contractItemIds = contractItems.Select(x => x.Id);
+
+            await DeleteFittingAsync(contractItemIds, cancellationToken);
+            await DeleteSurveyAsync(contractItemIds, cancellationToken);
+            await DeleteServiceCallAsync(contractItemIds, cancellationToken);
+
+            foreach (var contractItem in contractItems)
+            {
+                _contractItemRepository.Delete(contractItem);
+            }
+        }
+
+        private async Task DeleteFittingAsync(IEnumerable<Guid> contractItemIds, CancellationToken cancellationToken)
+        {
+            var fittings = await _fittingRepository.GetAllAsQuarble()
+                .Where(x => contractItemIds.Contains(x.ContractItemId.Value))
+                .ToListAsync(cancellationToken);
+
+            foreach (var fitting in fittings)
+            {
+                _fittingRepository.Delete(fitting);
+            }
+        }
+
+        private async Task DeleteServiceCallAsync(IEnumerable<Guid> contractItemIds, CancellationToken cancellationToken)
+        {
+            var surviceCalls = await _servicCallRepository.GetAllAsQuarble()
+                .Where(x => contractItemIds.Contains(x.ContractItemId.Value))
+                .ToListAsync(cancellationToken);
+
+            foreach (var serviceCall in surviceCalls)
+            {
+                _servicCallRepository.Delete(serviceCall);
+            }
+        }
+
+        private async Task DeleteSurveyAsync(IEnumerable<Guid> contractItemIds, CancellationToken cancellationToken)
+        {
+            var surveys = await _surveyRepository.GetAllAsQuarble()
+                .Where(x => contractItemIds.Contains(x.ContractItemId.Value))
+                .ToListAsync(cancellationToken);
+
+            foreach (var survey in surveys)
+            {
+                _surveyRepository.Delete(survey);
+            }
         }
 
         public async Task<GetContractResponse> GetContractAsync(GetContractRequest request, CancellationToken cancellationToken)

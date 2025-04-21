@@ -4,6 +4,8 @@ namespace ASAP.Domain.Entities
 {
     public class ContractItem : BaseEntity
     {
+        public int  ContractItemNumber { get; set; }
+
         public string? Address { get; set; }
 
         public int? RequirementContractTypeId { get; set; }

@@ -3,7 +3,7 @@
     public class GetSurveysReponse : SurveyDto
     {
         public Guid? Id { get; set; }
-
+        public int ContractItemNumber { get; set; }
         public DateTime? SurveyDateFrom { get; set; }
 
         public DateTime? SurveyDateTo { get; set; }

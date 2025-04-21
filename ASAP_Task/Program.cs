@@ -54,9 +54,9 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseHttpsRedirection();
 app.UseErrorHandler();
 app.UseHangfireDashboard();
 app.UseHangfireServer();

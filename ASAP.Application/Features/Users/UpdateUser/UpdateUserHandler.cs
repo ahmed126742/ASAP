@@ -3,16 +3,16 @@ using MediatR;
 
 namespace ASAP.Application.Features.Users.UpdateUser
 {
-    public class UpdateUserHandler : IRequestHandler<UpdateUserRequest>
+    public class UpdateUserHandler : IRequestHandler<UpdateUserRequest, UpdateUserResponse>
     {
         private readonly IUserService _userService;
         public UpdateUserHandler(IUserService userService)
         {
             _userService = userService;
         }
-        public async Task Handle(UpdateUserRequest request, CancellationToken cancellationToken)
+        public async Task<UpdateUserResponse> Handle(UpdateUserRequest request, CancellationToken cancellationToken)
         {
-            await _userService.UpdateUserAsync(request, cancellationToken);
+            return await _userService.UpdateUserAsync(request, cancellationToken);
         }
     }
 }

@@ -56,8 +56,16 @@ namespace ASAP.Infrastructure.Services.Contract
                     throw new Exception("surveyor does not exist!");
             }
 
-            
+            var greatestContractItemNumber = await _contractItemRepository.GetAllAsQuarble()
+                .OrderByDescending(x => x.ContractItemNumber)
+                .FirstOrDefaultAsync(cancellationToken);
+
             var contractItem = _mapper.Map<ContractItem>(request);
+            if (greatestContractItemNumber == null)
+                contractItem.ContractItemNumber = 1;
+            else
+                contractItem.ContractItemNumber = greatestContractItemNumber.ContractItemNumber + 1;
+           
             _contractItemRepository.Create(contractItem);
             await _unitOfWork.Save(cancellationToken);
             return contractItem.Id;
@@ -105,7 +113,7 @@ namespace ASAP.Infrastructure.Services.Contract
 
         public async Task<PagedReponse<GetFilteredContractItemReponse>> GetContractItemFiltered(PaginationRequest<GetFilteredContractItemRequest, GetFilteredContractItemReponse> request, CancellationToken cancellationToken)
         {
-            var filteredContractItems = _contractItemRepository.GetFilteredContractItems(request.PageNumber, request.PageSize, (int)request.Filters.ContractItemCountId, request.Filters.ContractId, request.Filters.ProductionWeek, request.Filters.Address, request.Filters.InstallationDateFrom, request.Filters.InstallationDateTo);
+            var filteredContractItems = _contractItemRepository.GetFilteredContractItems(request.PageNumber, request.PageSize, (int)request.Filters.ContractItemCountId, request.Filters.ContractId, request.Filters.ProductionWeek, request.Filters.Address, request.Filters.InstallationDateFrom, request.Filters.InstallationDateTo, request.Filters.RequestDateFrom, request.Filters.RequestDateTo, request.Filters.GlassDeliveryDateFrom, request.Filters.GlassDeliveryDateTo);
 
             var paginatedFilteredContractItems = filteredContractItems.Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
@@ -113,20 +121,6 @@ namespace ASAP.Infrastructure.Services.Contract
                 .Select(x => _mapper.Map<GetFilteredContractItemReponse>(x));
 
             return new PagedReponse<GetFilteredContractItemReponse>(paginatedFilteredContractItems, await filteredContractItems.CountAsync(cancellationToken), request.PageNumber, request.PageSize);
-            //var pagedResponse = new PagedReponse<GetFilteredContractItemReponse>(paginatedFilteredContractItems, await filteredContractItems.CountAsync(cancellationToken), request.PageNumber, request.PageSize);
-            //var suppliersIds = new List<Guid>();
-            //foreach (var item in pagedResponse.Items)
-            //{
-            //    suppliersIds.Add(item.PD_SupplierId.GetValueOrDefault());
-            //    suppliersIds.Add(item.Ancils_SupplierId.GetValueOrDefault());
-            //    suppliersIds.Add(item.Bifolds_SupplierId.GetValueOrDefault());
-            //    suppliersIds.Add(item.FED_SupplierId.GetValueOrDefault());
-            //    suppliersIds.Add(item.Roofs_SupplierId.GetValueOrDefault());
-            //    suppliersIds.Add(item.VS_SupplierId.GetValueOrDefault());
-            //    suppliersIds.Add(item.W_RD_FD_SupplierId.GetValueOrDefault());
-            //}
-            //var suppliers = await _userRepository.GetAllAsQuarble(x => suppliersIds.Distinct().Contains(x.Id))?.ToListAsync(cancellationToken);
-
         }
 
         public async Task UpdateContractItem(UpdateContractItemRequest request, CancellationToken cancellationToken)

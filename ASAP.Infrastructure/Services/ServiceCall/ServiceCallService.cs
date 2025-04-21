@@ -135,7 +135,7 @@ namespace ASAP.Infrastructure.Services.ServiceCall
 
         public async Task<PagedReponse<GetUserJobsResponse>> GetMyServiceCalls(PaginationRequest<GetUserJobsRequest, GetUserJobsResponse> request, CancellationToken cancellationToken)
         {
-            var filteredContractItems = _contractItemRepository.GetAllAsQuarble(x => x.FitterId == Guid.NewGuid() && x.Status == (int)JobStatusEnum.Booked)
+            var filteredContractItems = _contractItemRepository.GetAllAsQuarble(x => x.FitterId == request.Filters.UserId && x.Status == (int)JobStatusEnum.Booked)
                 .Select(x => _mapper.Map<GetUserJobsResponse>(x));
 
             return new PagedReponse<GetUserJobsResponse>(filteredContractItems, await filteredContractItems.CountAsync(cancellationToken), request.PageNumber, request.PageSize);

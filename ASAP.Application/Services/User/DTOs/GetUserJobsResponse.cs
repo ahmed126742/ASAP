@@ -2,6 +2,8 @@
 {
     public class GetUserJobsResponse
     {
+        public int? ContractItemNumber { get; set; }
+
         public string JobId { get; set; }
 
         public string JobTypeId { get; set; }
@@ -17,5 +19,7 @@
         public string Customer { get; set; }
 
         public string PostCode { get; set; }
+
+        public string? Address { get; set; }
     }
 }

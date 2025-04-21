@@ -23,6 +23,7 @@ namespace ASAP.Application.Services.User.ServiceCall.Mapping
                 .ForMember(dst => dst.EndDate, opt => opt.MapFrom(src => src.InstallationDateTo))
                 .ForMember(dst => dst.JobTypeId, opt => opt.MapFrom(src => src.RequirementContractTypeId))
                 .ForMember(dst => dst.JobId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.Address, opt => opt.MapFrom(src => src.Address))
                 .ForMember(dst => dst.Customer, opt => opt.MapFrom(src => src.Contract.Name));
         }
     }

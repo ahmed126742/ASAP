@@ -40,7 +40,7 @@ namespace ASAP.Infrastructure.Services.User
             return new CreateUserResponse { Id = user.Id };
         }
 
-        public async Task DeleteUserAsync(DeleteUserRequest request, CancellationToken cancellationToken)
+        public async Task<DeleteUserRepons> DeleteUserAsync(DeleteUserRequest request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.Get(request.Id, cancellationToken);
             if (user == null)
@@ -48,6 +48,7 @@ namespace ASAP.Infrastructure.Services.User
 
             _userRepository.Delete(user);
             await _unitOfWork.Save(cancellationToken);
+            return new DeleteUserRepons { Email = user.Email }; 
         }
 
         public async Task<PagedReponse<GetFilteredUsersResponse>> GetPagedFilteresUsers(PaginationRequest<GetFilteredUsersRequest, GetFilteredUsersResponse> request, CancellationToken CancellationToken)
@@ -83,7 +84,7 @@ namespace ASAP.Infrastructure.Services.User
               return await _userRepository.GetUserByEmailAsync(email, cancellationToken);
         }
 
-        public async Task UpdateUserAsync(UpdateUserRequest request, CancellationToken cancellationToken)
+        public async Task<UpdateUserResponse> UpdateUserAsync(UpdateUserRequest request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.Get(request.Id.GetValueOrDefault(), cancellationToken);
             if (user == null)
@@ -95,9 +96,11 @@ namespace ASAP.Infrastructure.Services.User
                     throw new BadRequestException("Email already exist!");
             }
 
+            var result = new UpdateUserResponse { Email = user.Email };
             _mapper.Map(request, user);
             _userRepository.Update(user);
             await _unitOfWork.Save(cancellationToken);
+            return result;
         }
     }
 }

@@ -9,9 +9,7 @@ namespace ASAP.Application.Services.ContractItems.DTOs
         public string? PostalCode { get; set; }
 
         public JobStatusEnum? Status { get; set; }
-
         public int? ProductionWeek { get; set; }
-
         public DateTime? InstallationDateFrom { get; set; }
         public DateTime? InstallationDateTo { get; set; }
 
@@ -25,7 +23,6 @@ namespace ASAP.Application.Services.ContractItems.DTOs
         public int? CertesNo { get; set; }
         public int? InvoiceNo { get; set; }
         public string? Notes { get; set; }
-
         public string? Frame { get; set; }
         public DateTime? RequestDate { get; set; }
 

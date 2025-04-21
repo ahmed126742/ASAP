@@ -2,7 +2,7 @@
 
 namespace ASAP.Application.Features.Users.UpdateUser
 {
-    public class UpdateUserRequest : IRequest
+    public class UpdateUserRequest : IRequest<UpdateUserResponse>
     {
         public Guid? Id { get; set; }
         public string? FirstName { get; set; }

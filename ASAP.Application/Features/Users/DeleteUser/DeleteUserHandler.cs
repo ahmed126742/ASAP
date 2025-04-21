@@ -3,7 +3,7 @@ using MediatR;
 
 namespace ASAP.Application.Features.Users.DeleteUser
 {
-    public class DeleteUserHandler : IRequestHandler<DeleteUserRequest>
+    public class DeleteUserHandler : IRequestHandler<DeleteUserRequest, DeleteUserRepons>
     {
         private readonly IUserService _userService;
 
@@ -12,9 +12,9 @@ namespace ASAP.Application.Features.Users.DeleteUser
             _userService = userService;
         }
 
-        public async Task Handle(DeleteUserRequest request, CancellationToken cancellationToken)
+        public async Task<DeleteUserRepons> Handle(DeleteUserRequest request, CancellationToken cancellationToken)
         {
-             await _userService.DeleteUserAsync(request, cancellationToken);
+             return  await _userService.DeleteUserAsync(request, cancellationToken);
         }
     }
 }

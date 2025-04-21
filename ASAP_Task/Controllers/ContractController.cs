@@ -43,6 +43,7 @@ namespace ASAP_Task.Controllers
 
         [HttpPost("GetContracts")]
         [Authorize]
+
         public async Task<ActionResult<PagedReponse<GetFilteredContractsResponse>>> GetContracts(PaginationRequest<GetFilteredContractsRequest, GetFilteredContractsResponse> request, CancellationToken cancellationToken)
         {
             return Ok(await _contractService.GetPagedFilteresContracts(request, cancellationToken));

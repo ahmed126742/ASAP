@@ -13,7 +13,7 @@
         public Guid? SurveyorId { get; set; }
 
         public string? SurveyorName { get; set; }
-
+        public int? ContractItemNumber { get; set; }
 
         public string? PostalCode { get; set; }
 

@@ -27,6 +27,7 @@ namespace ASAP.Application.Services.User.Survey.Mapping
                 .ForMember(dst => dst.SurveyDateTo, opt => opt.MapFrom(src => src.SurveyDateTo))
                 .ForMember(dst => dst.JobTypeId, opt => opt.MapFrom(src => src.RequirementContractTypeId))
                 .ForMember(dst => dst.JobId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.Address, opt => opt.MapFrom(src => src.Address))
                 .ForMember(dst => dst.Customer, opt => opt.MapFrom(src => src.Contract.Name));
 
         }

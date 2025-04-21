@@ -24,7 +24,7 @@ namespace ASAP_Task.WepApi.Authentication.Extensions
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 RequireExpirationTime = true, // for refresh token 
-                ValidateLifetime = false,
+                ValidateLifetime = true,
 
                 //ValidIssuer = configuration["JWTConfig:ValidIssuer"],
                 //ValidAudience = configuration["JWTConfig:ValidAudience"],

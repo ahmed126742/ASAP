@@ -14,15 +14,15 @@ namespace ASAP.Presistance.Repositores
         {
         }
 
-        public IQueryable<Domain.Entities.ContractItem> GetFilteredContractItems(int pageNumber, int pageSize, int? contractItemCountId, Guid? contaractId , int? ProductionWeek, string? address = null, DateTime? installationDateFrom = null, DateTime? installationDateTo = null)
-        {
-            var filterContractItems = GetAllAsQuarble(FilterContractItems(contractItemCountId, contaractId, ProductionWeek, address, installationDateFrom, installationDateTo))
+        public IQueryable<Domain.Entities.ContractItem> GetFilteredContractItems(int pageNumber, int pageSize, int? contractItemCountId, Guid? contaractId, int? ProductionWeek, string? address = null, DateTime? installationDateFrom = null, DateTime? installationDateTo = null, DateTime? RequestDateFrom = null, DateTime? RequestDateTo = null, DateTime? GlassDeliveryDateFrom = null, DateTime? GlassDeliveryDateTo = null)
+        { 
+            var filterContractItems = GetAllAsQuarble(FilterContractItems(contractItemCountId, contaractId, ProductionWeek, address, installationDateFrom, installationDateTo, RequestDateFrom, RequestDateTo, GlassDeliveryDateFrom, GlassDeliveryDateTo))
                 .OrderBy(x => x.Address);
 
             return filterContractItems;
         }
 
-        private Expression<Func<Domain.Entities.ContractItem, bool>> FilterContractItems(int? contractItemCountId, Guid? contaractId, int? ProductionWeek, string? address = null,DateTime ? installationDateFrom = null, DateTime? installationDateTo = null)
+        private Expression<Func<Domain.Entities.ContractItem, bool>> FilterContractItems(int? contractItemCountId, Guid? contaractId, int? ProductionWeek, string? address = null,DateTime ? installationDateFrom = null, DateTime? installationDateTo = null, DateTime? RequestDateFrom = null, DateTime? RequestDateTo = null, DateTime? GlassDeliveryDateFrom = null, DateTime? GlassDeliveryDateTo = null)
         {
             return x => 
                (contractItemCountId == null || contractItemCountId == 1 // all
@@ -34,7 +34,9 @@ namespace ASAP.Presistance.Repositores
             && (ProductionWeek == null || x.ProductionWeek == ProductionWeek)
             && (string.IsNullOrEmpty(address) || string.IsNullOrEmpty(x.Address) || x.Address.ToLower().Contains(address.ToLower()))
             && (installationDateFrom == null || installationDateFrom <= x.InstallationDateFrom)
-            && (installationDateTo == null || installationDateTo >= x.InstallationDateTo);
+            && (installationDateTo == null || installationDateTo >= x.InstallationDateTo)
+            && (RequestDateFrom == null || RequestDateTo == null || (RequestDateFrom <= x.RequestDate && RequestDateTo >= x.RequestDate))
+            && (GlassDeliveryDateFrom == null || GlassDeliveryDateTo == null|| (GlassDeliveryDateFrom <= x.GlassDeliveryDate && GlassDeliveryDateTo >= x.GlassDeliveryDate));
         }
 
         public async Task<ContractItem> GetContractItem(Guid id, CancellationToken cancellationToken)

@@ -14,7 +14,7 @@
 
         public int? Cill { get; set; }
 
-        public int? Horns { get; set; }
+        public string? Horns { get; set; }
 
         public string? Glass { get; set; }
 

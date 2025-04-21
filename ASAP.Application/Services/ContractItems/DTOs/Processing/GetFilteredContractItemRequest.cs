@@ -12,8 +12,16 @@ namespace ASAP.Application.Services.ContractItems.DTOs.Processing
 
         public string? Address { get; set; }
 
+        public DateTime? RequestDateFrom { get; set; }
+
+        public DateTime? RequestDateTo { get; set; }
+
         public DateTime? InstallationDateFrom { get; set; }
 
         public DateTime? InstallationDateTo { get; set; }
+
+        public DateTime? GlassDeliveryDateFrom { get; set; }
+
+        public DateTime? GlassDeliveryDateTo { get; set; }
     }
 }

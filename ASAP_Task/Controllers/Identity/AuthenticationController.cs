@@ -120,7 +120,7 @@ namespace ASAP_Task.WebAPI.Controllers.Identity
 
             var existingUser = await _userManager.FindByEmailAsync(request.Email);
             if (existingUser == null)
-                return BadRequest(MapToAuthResult(null, false, null, new List<string> { "User is not exist!" }));
+                return BadRequest(MapToAuthResult(null, false, null, new List<string> { "User does not exist!" }));
 
             var isValid = await _userManager.CheckPasswordAsync(existingUser, request.Password);
             if (!isValid)
@@ -138,7 +138,7 @@ namespace ASAP_Task.WebAPI.Controllers.Identity
 
             var existingUser = await _userManager.FindByEmailAsync(request.Email);
             if (existingUser == null)
-                return BadRequest(MapToAuthResult(null, false, null, new List<string> { "User is not exist!" }));
+                return BadRequest(MapToAuthResult(null, false, null, new List<string> { "User does not exist!" }));
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
             if (string.IsNullOrEmpty(token))

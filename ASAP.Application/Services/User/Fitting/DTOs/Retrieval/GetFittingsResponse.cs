@@ -3,6 +3,7 @@
     public class GetFittingsResponse : FittingDto
     {
         public Guid? Id { get; set; }
+        public int? ContractItemNumber { get; set; }
 
         public DateTime? FittingDateFrom { get; set; }
 
